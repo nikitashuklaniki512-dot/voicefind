@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoiceFind — Search & Redeem Finder</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left,#18345c 0,#07111f 35%,#03070d 100%);
+  color:#fff;
+}
+
+.container{
+  width:min(1100px,94%);
+  margin:auto;
+  padding:25px 0 50px;
+}
+
+header{
+  text-align:center;
+  padding:25px 0 30px;
+}
+
+.logo{
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.logo span{
+  color:#36d9ff;
+}
+
+.subtitle{
+  color:#9eafc4;
+  margin-top:8px;
+  font-size:15px;
+}
+
+.search-card{
+  background:rgba(12,24,40,.88);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+.search-row{
+  display:flex;
+  gap:10px;
+}
+
+.search-input{
+  flex:1;
+  border:0;
+  outline:none;
+  background:#071321;
+  color:white;
+  border:1px solid #22364e;
+  border-radius:15px;
+  padding:17px;
+  font-size:16px;
+}
+
+.btn{
+  border:0;
+  border-radius:15px;
+  padding:0 20px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.12);
+}
+
+.search-btn{
+  background:#36d9ff;
+  color:#031019;
+}
+
+.voice-btn{
+  background:#8257ff;
+  color:white;
+  min-width:58px;
+  font-size:21px;
+}
+
+.status{
+  margin-top:13px;
+  min-height:20px;
+  color:#91a7be;
+  font-size:13px;
+}
+
+.section{
+  margin-top:25px;
+}
+
+.section-title{
+  font-size:21px;
+  margin-bottom:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.site-btn{
+  background:#0d1b2c;
+  border:1px solid #1d3148;
+  color:white;
+  border-radius:16px;
+  padding:18px 12px;
+  cursor:pointer;
+  text-align:center;
+  transition:.2s;
+}
+
+.site-btn:hover{
+  border-color:#36d9ff;
+  transform:translateY(-3px);
+}
+
+.site-icon{
+  font-size:27px;
+  display:block;
+  margin-bottom:8px;
+}
+
+.redeem-box{
+  background:rgba(12,24,40,.88);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:22px;
+  padding:20px;
+}
+
+.add-row{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.add-row input{
+  flex:1;
+  background:#071321;
+  border:1px solid #22364e;
+  border-radius:13px;
+  color:white;
+  padding:14px;
+  outline:none;
+}
+
+.add-btn{
+  background:#37e58c;
+  color:#03140b;
+  padding:0 18px;
+}
+
+.redeem-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.redeem-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:#091625;
+  border:1px solid #1b3046;
+  border-radius:13px;
+  padding:13px;
+}
+
+.code{
+  font-family:monospace;
+  font-weight:bold;
+  color:#54e6ff;
+  word-break:break-all;
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+}
+
+.small-btn{
+  border:0;
+  border-radius:9px;
+  padding:8px 10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.copy{
+  background:#25425e;
+  color:white;
+}
+
+.delete{
+  background:#542332;
+  color:#ffb8c5;
+}
+
+.empty{
+  color:#71859c;
+  text-align:center;
+  padding:20px;
+}
+
+footer{
+  text-align:center;
+  color:#667b92;
+  font-size:12px;
+  margin-top:30px;
+}
+
+@media(max-width:750px){
+  .search-row{
+    display:grid;
+    grid-template-columns:1fr 58px;
+  }
+
+  .search-input{
+    grid-column:1 / -1;
+  }
+
+  .search-btn{
+    height:52px;
+  }
+
+  .voice-btn{
+    height:52px;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .add-row{
+    flex-direction:column;
+  }
+
+  .add-btn{
+    height:48px;
+  }
+}
+
+@media(max-width:420px){
+  .logo{
+    font-size:28px;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .redeem-item{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .actions{
+    width:100%;
+  }
+
+  .small-btn{
+    flex:1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">Voice<span>Find</span> 🔎</div>
+  <div class="subtitle">
+    Search the web with your voice • Keep your redeem list
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-card">
+
+  <div class="search-row">
+    <input
+      id="searchInput"
+      class="search-input"
+      type="text"
+      placeholder="Search anything..."
+      autocomplete="off"
+    >
+
+    <button
+      id="voiceBtn"
+      class="btn voice-btn"
+      title="Voice Search">
+      🎤
+    </button>
+
+    <button
+      id="searchBtn"
+      class="btn search-btn">
+      Search
+    </button>
+  </div>
+
+  <div id="status" class="status">
+    Type something or tap 🎤 and speak.
+  </div>
+
+</div>
+
+<!-- QUICK SEARCH -->
+<section class="section">
+
+  <h2 class="section-title">Quick Search</h2>
+
+  <div class="grid">
+
+    <button class="site-btn" onclick="searchSite('Google')">
+      <span class="site-icon">🔎</span>
+      Google
+    </button>
+
+    <button class="site-btn" onclick="searchSite('YouTube')">
+      <span class="site-icon">▶️</span>
+      YouTube
+    </button>
+
+    <button class="site-btn" onclick="searchSite('Wikipedia')">
+      <span class="site-icon">📚</span>
+      Wikipedia
+    </button>
+
+    <button class="site-btn" onclick="searchSite('Reddit')">
+      <span class="site-icon">💬</span>
+      Reddit
+    </button>
+
+  </div>
+
+</section>
+
+<!-- REDEEM LIST -->
+<section class="section">
+
+  <h2 class="section-title">🎁 My Redeem List</h2>
+
+  <div class="redeem-box">
+
+    <div class="add-row">
+
+      <input
+        id="redeemInput"
+        type="text"
+        placeholder="Enter redeem code or item..."
+      >
+
+      <button
+        class="btn add-btn"
+        onclick="addRedeem()">
+        + Add
+      </button>
+
+    </div>
+
+    <div id="redeemList" class="redeem-list"></div>
+
+  </div>
+
+</section>
+
+<footer>
+  VoiceFind • Personal search helper
+</footer>
+
+</div>
+
+<script>
+
+/* =========================
+   SEARCH
+========================= */
+
+const searchInput = document.getElementById("searchInput");
+const voiceBtn = document.getElementById("voiceBtn");
+const searchBtn = document.getElementById("searchBtn");
+const statusText = document.getElementById("status");
+
+function doSearch(){
+
+  const query = searchInput.value.trim();
+
+  if(!query){
+    statusText.textContent = "Please enter something to search.";
+    searchInput.focus();
+    return;
+  }
+
+  const url =
+    "https://www.google.com/search?q=" +
+    encodeURIComponent(query);
+
+  window.open(url, "_blank");
+
+  statusText.textContent =
+    "Searching Google for: " + query;
+}
+
+searchBtn.addEventListener("click", doSearch);
+
+searchInput.addEventListener("keydown", function(e){
+
+  if(e.key === "Enter"){
+    doSearch();
+  }
+
+});
+
+
+/* =========================
+   QUICK SITE SEARCH
+========================= */
+
+function searchSite(site){
+
+  const query = searchInput.value.trim();
+
+  if(!query){
+    statusText.textContent =
+      "First enter something to search.";
+    searchInput.focus();
+    return;
+  }
+
+  let url = "";
+
+  if(site === "Google"){
+    url =
+      "https://www.google.com/search?q=" +
+      encodeURIComponent(query);
+  }
+
+  if(site === "YouTube"){
+    url =
+      "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent(query);
+  }
+
+  if(site === "Wikipedia"){
+    url =
+      "https://www.wikipedia.org/w/index.php?search=" +
+      encodeURIComponent(query);
+  }
+
+  if(site === "Reddit"){
+    url =
+      "https://www.reddit.com/search/?q=" +
+      encodeURIComponent(query);
+  }
+
+  window.open(url, "_blank");
+
+}
+
+
+/* =========================
+   VOICE SEARCH
+========================= */
+
+let recognition = null;
+
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+if(SpeechRecognition){
+
+  recognition = new SpeechRecognition();
+
+  recognition.lang = "en-IN";
+  recognition.interimResults = false;
+  recognition.continuous = false;
+
+  recognition.onstart = function(){
+
+    voiceBtn.textContent = "🔴";
+
+    statusText.textContent =
+      "Listening... Speak now.";
+
+  };
+
+  recognition.onresult = function(event){
+
+    const text =
+      event.results[0][0].transcript;
+
+    searchInput.value = text;
+
+    statusText.textContent =
+      "You said: " + text;
+
+    doSearch();
+
+  };
+
+  recognition.onerror = function(event){
+
+    statusText.textContent =
+      "Voice search error: " + event.error;
+
+    voiceBtn.textContent = "🎤";
+
+  };
+
+  recognition.onend = function(){
+
+    voiceBtn.textContent = "🎤";
+
+  };
+
+}else{
+
+  voiceBtn.disabled = true;
+
+  statusText.textContent =
+    "Voice search is not supported in this browser.";
+
+}
+
+voiceBtn.addEventListener("click", function(){
+
+  if(!recognition) return;
+
+  try{
+    recognition.start();
+  }catch(error){
+    console.log(error);
+  }
+
+});
+
+
+/* =========================
+   REDEEM LIST
+========================= */
+
+let redeemItems =
+  JSON.parse(localStorage.getItem("voiceFindRedeems")) || [];
+
+function saveRedeems(){
+
+  localStorage.setItem(
+    "voiceFindRedeems",
+    JSON.stringify(redeemItems)
+  );
+
+}
+
+function addRedeem(){
+
+  const input =
+    document.getElementById("redeemInput");
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    input.focus();
+    return;
+  }
+
+  redeemItems.push(value);
+
+  saveRedeems();
+
+  input.value = "";
+
+  renderRedeems();
+
+}
+
+function copyRedeem(index){
+
+  const value = redeemItems[index];
+
+  navigator.clipboard.writeText(value)
+    .then(function(){
+
+      statusText.textContent =
+        "Copied: " + value;
+
+    })
+    .catch(function(){
+
+      statusText.textContent =
+        "Copy failed. Please copy it manually.";
+
+    });
+
+}
+
+function deleteRedeem(index){
+
+  redeemItems.splice(index,1);
+
+  saveRedeems();
+
+  renderRedeems();
+
+}
+
+function renderRedeems(){
+
+  const list =
+    document.getElementById("redeemList");
+
+  list.innerHTML = "";
+
+  if(redeemItems.length === 0){
+
+    list.innerHTML =
+      '<div class="empty">No redeem codes/items added yet.</div>';
+
+    return;
+
+  }
+
+  redeemItems.forEach(function(item,index){
+
+    const row =
+      document.createElement("div");
+
+    row.className = "redeem-item";
+
+    row.innerHTML = `
+      <div class="code">${escapeHTML(item)}</div>
+
+      <div class="actions">
+
+        <button
+          class="small-btn copy"
+          onclick="copyRedeem(${index})">
+          Copy
+        </button>
+
+        <button
+          class="small-btn delete"
+          onclick="deleteRedeem(${index})">
+          Delete
+        </button>
+
+      </div>
+    `;
+
+    list.appendChild(row);
+
+  });
+
+}
+
+
+/* =========================
+   SECURITY
+========================= */
+
+function escapeHTML(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+/* =========================
+   REDEEM ENTER KEY
+========================= */
+
+document
+  .getElementById("redeemInput")
+  .addEventListener("keydown",function(e){
+
+    if(e.key === "Enter"){
+      addRedeem();
+    }
+
+  });
+
+
+/* =========================
+   START
+========================= */
+
+renderRedeems();
+
+</script>
+
+</body>
+</html>
